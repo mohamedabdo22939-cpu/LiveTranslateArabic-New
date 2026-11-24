@@ -26,8 +26,6 @@ jobs:
             rm "$ZIP_FILE"
           else
             echo "Error: No zip file containing 'project' found in repository root!"
-            echo "Files in root:"
-            ls -la
             exit 1
           fi
 
@@ -42,6 +40,13 @@ jobs:
 
       - name: Build Debug APK
         run: |
+          GRADLEW_PATH=$(find . -name gradlew -print -quit)
+          if [ -z "$GRADLEW_PATH" ]; then
+            echo "Error: gradlew not found anywhere in the extracted files!"
+            exit 1
+          fi
+          GRADLEW_DIR=$(dirname "$GRADLEW_PATH")
+          cd "$GRADLEW_DIR"
           chmod +x ./gradlew
           ./gradlew assembleDebug
 
